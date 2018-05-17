@@ -4,8 +4,8 @@ DECLARE @MaximumAward DECIMAL = 1500;
 DECLARE @MinimumAward DECIMAL = 500;
 DECLARE @MaxApplicants INT = 2;
 
---SELECT * FROM dbo.NormalizedView
---WHERE AwardingGroupId =@awardgroup
+SELECT * FROM dbo.Algorithms
+WHERE AlgorithmId=@algorithmid
 
 DECLARE @CountOfScholarships INT =
         (

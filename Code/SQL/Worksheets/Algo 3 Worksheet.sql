@@ -1,4 +1,4 @@
-DECLARE @algorithmid INT = 1;
+DECLARE @algorithmid INT = 3;
 DECLARE @awardgroup INT = 1;
 DECLARE @MaximumAward DECIMAL = 1500;
 DECLARE @MinimumAward DECIMAL = 500;
@@ -23,7 +23,8 @@ DECLARE @CurrentAmount DECIMAL(9, 2);
 DECLARE @CurrentScholarshipApplicantId INT;
 
 
-
+SELECT * FROM dbo.Algorithms
+WHERE AlgorithmId=@algorithmid
 DELETE FROM dbo.ScholarshipAwards
 WHERE AlgorithmId = @algorithmid
       AND MaximumAward = @MaximumAward
@@ -39,7 +40,7 @@ BEGIN;
     );
     WITH currenttotals
     AS (SELECT ApplicantId,
-               SUM(Award) + @CurrentAmount Total
+               SUM(Award)  Total
         FROM dbo.ScholarshipAwards
         WHERE AlgorithmId = @algorithmid
               AND MaxApplicants = @MaxApplicants
