@@ -40,7 +40,7 @@ BEGIN;
               AND MinimumAward = @MinimumAward
               AND MaximumAward = @MaximumAward
         GROUP BY ApplicantId
-        HAVING SUM(Award) < @MaximumAward)
+        HAVING SUM(Award) > @MaximumAward)
     SELECT TOP 1
            @CurrentScholarshipId = ScholarshipId,
            @CurrentWinner = ApplicantId,
