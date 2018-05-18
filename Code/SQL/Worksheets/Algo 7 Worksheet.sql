@@ -1,7 +1,7 @@
-DECLARE @algorithmid INT = 6;
+DECLARE @algorithmid INT = 7;
 DECLARE @awardgroup INT = 1;
 DECLARE @MaximumAward DECIMAL = 1500;
-DECLARE @MinimumAward DECIMAL = 500;
+DECLARE @MinimumAward DECIMAL = 100;
 DECLARE @MaxApplicants INT = 2;
 
 SELECT *
@@ -26,6 +26,9 @@ DECLARE @CurrentAmount DECIMAL(9, 2);
 DECLARE @CurrentScholarshipApplicants INT;
 DECLARE @CurrentSplitAmount DECIMAL(9, 2);
 DECLARE @CurrentScholarshipApplicantId INT;
+DECLARE @applicantswithMinimumAmounts INT;
+DECLARE @CurrentNumberOfWinners INT;
+DECLARE @peopletodivdeby INT;
 
 DELETE FROM dbo.ScholarshipAwards
 WHERE AlgorithmId = @algorithmid
@@ -35,6 +38,8 @@ WHERE AlgorithmId = @algorithmid
       AND AwardingGroupId = @awardgroup;
 WHILE @ScholarshipCounter <= @CountOfScholarships
 BEGIN;
+ 
+	--amount in pool
     SET @CurrentAmount =
     (
         SELECT TOP 1
@@ -44,25 +49,28 @@ BEGIN;
               AND AwardingGroupId = @awardgroup
     );
 
+	 
+	---max number of people who can win
+	SET @applicantswithMinimumAmounts =(SELECT CONVERT(INT,@CurrentAmount/@MinimumAward))
+	 
+	--total number of people in pool
     SET @CurrentScholarshipApplicants =
     (
-        SELECT CASE
-                   WHEN CountTotalTable.TotalApplicants > @MaxApplicants THEN
-                       @MaxApplicants
-                   ELSE
-                       CountTotalTable.TotalApplicants
-               END
-        FROM
-        (
+         
             SELECT COUNT(ApplicantId) TotalApplicants
             FROM dbo.NormalizedView
             WHERE ScholarshipId = @ScholarshipCounter
                   AND AwardingGroupId = @awardgroup
-        ) CountTotalTable
+         
     );
-
-
-    SET @CurrentSplitAmount = @CurrentAmount / CONVERT(DECIMAL(9, 2), @CurrentScholarshipApplicants);
+	 
+	---set which ever is lower max number or total real number in pool
+	SET @peopletodivdeby=(SELECT CASE WHEN @CurrentScholarshipApplicants < @applicantswithMinimumAmounts THEN
+    @CurrentScholarshipApplicants ELSE @applicantswithMinimumAmounts END )
+	 
+	-- divide people by current amount
+	SET @CurrentSplitAmount =@CurrentAmount/CONVERT(DECIMAL(9,2),@peopletodivdeby)
+    
 
     INSERT INTO dbo.ScholarshipAwards
     (
@@ -98,7 +106,7 @@ BEGIN;
         WHERE ScholarshipId = @ScholarshipCounter
               AND AwardingGroupId = @awardgroup
     ) OrderGroup
-    WHERE OrderGroup.OrderId <= @MaxApplicants
+    WHERE OrderGroup.OrderId <= @peopletodivdeby
     ORDER BY OrderGroup.OrderId ASC;
     PRINT 'Current Winner is applicant:';
     PRINT @CurrentWinner;
