@@ -28,7 +28,7 @@ DELETE FROM dbo.ScholarshipAwards
 WHERE AlgorithmId = @algorithmid
       AND MaximumAward = @MaximumAward
       AND MinimumAward = @MinimumAward
-      AND MaxApplicants = @MaxApplicants;
+      AND MaxApplicants = @MaxApplicants AND AwardingGroupId=@awardgroup;
 WHILE @ScholarshipCounter <= @CountOfScholarships
 BEGIN
     SELECT TOP 1
@@ -38,7 +38,7 @@ BEGIN
            @CurrentScholarshipApplicantId = ScholarshipApplicantId,
            @CurrentAmount = ScholarshipAmount
     FROM dbo.NormalizedView
-    WHERE ScholarshipId = @ScholarshipCounter
+    WHERE ScholarshipId = @ScholarshipCounter AND AwardingGroupId=@awardgroup
     ORDER BY Ranking ASC;
     PRINT 'Current Winner is applicant:';
     PRINT @CurrentWinner;
@@ -78,7 +78,8 @@ FROM dbo.ScholarshipAwards
 WHERE AlgorithmId = @algorithmid
       AND MaxApplicants = @MaxApplicants
       AND MinimumAward = @MinimumAward
-      AND MaximumAward = @MaximumAward;
+      AND MaximumAward = @MaximumAward
+	  AND AwardingGroupId=@awardgroup;
 
 SELECT ApplicantId, SUM(Award) Total	 FROM dbo.ScholarshipAwards
  
@@ -86,4 +87,5 @@ WHERE AlgorithmId = @algorithmid
       AND MaxApplicants = @MaxApplicants
       AND MinimumAward = @MinimumAward
       AND MaximumAward = @MaximumAward
+	  AND AwardingGroupId=@awardgroup
 	  GROUP BY ApplicantId;
