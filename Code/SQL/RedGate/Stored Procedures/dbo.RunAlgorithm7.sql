@@ -63,7 +63,10 @@ BEGIN;
     (
         SELECT CONVERT(INT, @CurrentAmount / @MinimumAward)
     );
-
+	IF @applicantswithMinimumAmounts=0
+	BEGIN
+		SET @applicantswithMinimumAmounts=1
+	end
     --total number of people in pool
     SET @CurrentScholarshipApplicants =
     (
