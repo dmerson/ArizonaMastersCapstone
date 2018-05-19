@@ -1,9 +1,18 @@
-
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_NULLS ON
+GO
+CREATE PROC [dbo].[RunAlgorithm4]
+    @awardgroup INT,
+    @MaximumAward DECIMAL(9, 2),
+    @MinimumAward DECIMAL(9, 2),
+    @MaxApplicants INT
+AS
 DECLARE @algorithmid INT = 4;
-DECLARE @awardgroup INT = 1;
-DECLARE @MaximumAward DECIMAL = 1500;
-DECLARE @MinimumAward DECIMAL = 500;
-DECLARE @MaxApplicants INT = 2;
+--DECLARE @awardgroup INT = 1;
+--DECLARE @MaximumAward DECIMAL = 1500;
+--DECLARE @MinimumAward DECIMAL = 500;
+--DECLARE @MaxApplicants INT = 2;
 
 SELECT * FROM dbo.Algorithms
 WHERE AlgorithmId=@algorithmid
@@ -258,3 +267,4 @@ WHERE AlgorithmId = @algorithmid
       AND MinimumAward = @MinimumAward
       AND MaximumAward = @MaximumAward
       AND AwardingGroupId = @awardgroup;
+GO

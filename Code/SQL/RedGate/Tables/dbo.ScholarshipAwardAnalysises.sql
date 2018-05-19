@@ -6,9 +6,13 @@ CREATE TABLE [dbo].[ScholarshipAwardAnalysises]
 [MaximumAward] [decimal] (9, 2) NULL,
 [MinimumAward] [decimal] (9, 2) NULL,
 [MaxApplicants] [int] NULL,
-[ScholarshipAwardId] [int] NULL,
 [RA1] [bit] NOT NULL,
-[RA2] [bit] NOT NULL
+[RA2] [bit] NOT NULL,
+[RA3] [bit] NULL,
+[NumberOfAwarded] [int] NULL,
+[UniqueAwardees] [int] NULL,
+[MaximumAwarded] [decimal] (9, 2) NULL,
+[MinimumAwarded] [decimal] (9, 2) NULL
 ) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[ScholarshipAwardAnalysises] ADD CONSTRAINT [PK_ScholarshipAwardAnalysises] PRIMARY KEY CLUSTERED  ([ScholarshipAwardAnalysisId]) ON [PRIMARY]
