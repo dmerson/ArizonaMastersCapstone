@@ -156,6 +156,12 @@ AS (SELECT ApplicantRankings.AwardingGroupId,
           AND ApplicantRankings.AwardingGroupId = @awardgroup
     GROUP BY ApplicantRankings.AwardingGroupId,
              Ranking),
+      maxmin
+AS (SELECT AwardingGroupId,
+           MAX(Total) MaximumAmount,
+           MIN(Total) MinimumAmount
+    FROM calculations
+    GROUP BY calculations.AwardingGroupId),
       ra1checkraw
 AS (SELECT calculations.AwardingGroupId,
            calculations.Ranking,
@@ -235,7 +241,7 @@ INSERT INTO dbo.ScholarshipAwardAnalysises
     MaxApplicants,
     RA1,
     RA2,
-	RA3,
+    RA3,
     NumberOfAwarded,
     UniqueAwardees,
     MaximumAwarded,
@@ -252,8 +258,8 @@ SELECT TOP 1
        ra3table.ra3check,
        NumberOfAwarded,
        otherstats.UniqueAwardees,
-       otherstats.MaximumAwarded,
-       otherstats.MinimumAwarded
+       maxmin.MaximumAmount,
+       maxmin.MinimumAmount
 FROM ra1checkraw
     INNER JOIN ra1
         ON ra1.AwardingGroupId = ra1checkraw.AwardingGroupId
@@ -262,9 +268,8 @@ FROM ra1checkraw
     INNER JOIN ra3table
         ON ra3table.AwardingGroupId = ra1checkraw.AwardingGroupId
     INNER JOIN otherstats
-        ON otherstats.AwardingGroupId = countranks.AwardingGroupId;
-
-
+        ON otherstats.AwardingGroupId = ra1checkraw.AwardingGroupId
+	INNER JOIN maxmin ON maxmin.AwardingGroupId = ra1checkraw.AwardingGroupId;
 
 SELECT *
 FROM dbo.ScholarshipAwardAnalysises
