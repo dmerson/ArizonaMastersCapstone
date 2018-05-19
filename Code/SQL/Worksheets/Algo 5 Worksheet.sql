@@ -1,3 +1,4 @@
+
 DECLARE @algorithmid INT = 5;
 DECLARE @awardgroup INT = 1;
 DECLARE @MaximumAward DECIMAL = 1500;
@@ -13,10 +14,12 @@ WHERE AlgorithmId = @algorithmid;
 DECLARE @CountOfScholarships INT =
         (
             SELECT COUNT(DISTINCT ScholarshipId) FROM dbo.NormalizedView
+			WHERE AwardingGroupId =@awardgroup
         );
 DECLARE @CountOfApplicants INT =
         (
             SELECT COUNT(DISTINCT ApplicantId) FROM dbo.NormalizedView
+			WHERE AwardingGroupId =@awardgroup
         );
 
 DECLARE @ScholarshipCounter INT = 1;
