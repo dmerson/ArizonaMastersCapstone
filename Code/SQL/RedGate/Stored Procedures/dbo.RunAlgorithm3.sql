@@ -9,6 +9,7 @@ CREATE PROC [dbo].[RunAlgorithm3]
     @MaxApplicants INT
 AS
 DECLARE @algorithmid INT = 3;
+--left for future troubleshooting
 --DECLARE @awardgroup INT = 1;
 --DECLARE @MaximumAward DECIMAL = 1500;
 --DECLARE @MinimumAward DECIMAL = 500;
@@ -33,8 +34,7 @@ DECLARE @CurrentAmount DECIMAL(9, 2);
 DECLARE @CurrentScholarshipApplicantId INT;
 
 
-SELECT * FROM dbo.Algorithms
-WHERE AlgorithmId=@algorithmid
+ 
 DELETE FROM dbo.ScholarshipAwards
 WHERE AlgorithmId = @algorithmid
       AND MaximumAward = @MaximumAward
@@ -104,22 +104,23 @@ BEGIN;
     SET @ScholarshipCounter = @ScholarshipCounter + 1;
 END;
 
-SELECT *
-FROM dbo.ScholarshipAwards
-WHERE AlgorithmId = @algorithmid
-      AND MaxApplicants = @MaxApplicants
-      AND MinimumAward = @MinimumAward
-      AND MaximumAward = @MaximumAward AND AwardingGroupId=@awardgroup;
+--left for future troubleshooting
+--SELECT *
+--FROM dbo.ScholarshipAwards
+--WHERE AlgorithmId = @algorithmid
+--      AND MaxApplicants = @MaxApplicants
+--      AND MinimumAward = @MinimumAward
+--      AND MaximumAward = @MaximumAward AND AwardingGroupId=@awardgroup;
 
-SELECT ApplicantId,
-       SUM(Award) Total
-FROM dbo.ScholarshipAwards
-WHERE AlgorithmId = @algorithmid
-      AND MaxApplicants = @MaxApplicants
-      AND MinimumAward = @MinimumAward
-      AND MaximumAward = @MaximumAward AND AwardingGroupId=@awardgroup
-GROUP BY ApplicantId
-ORDER BY Total desc;
+--SELECT ApplicantId,
+--       SUM(Award) Total
+--FROM dbo.ScholarshipAwards
+--WHERE AlgorithmId = @algorithmid
+--      AND MaxApplicants = @MaxApplicants
+--      AND MinimumAward = @MinimumAward
+--      AND MaximumAward = @MaximumAward AND AwardingGroupId=@awardgroup
+--GROUP BY ApplicantId
+--ORDER BY Total desc;
 
 DELETE FROM dbo.ScholarshipAwardAnalysises
 WHERE AlgorithmId = @algorithmid
@@ -260,11 +261,12 @@ FROM ra1checkraw
         ON otherstats.AwardingGroupId = ra1checkraw.AwardingGroupId
 	INNER JOIN maxmin ON maxmin.AwardingGroupId = ra1checkraw.AwardingGroupId;
 
-SELECT *
-FROM dbo.ScholarshipAwardAnalysises
-WHERE AlgorithmId = @algorithmid
-      AND MaxApplicants = @MaxApplicants
-      AND MinimumAward = @MinimumAward
-      AND MaximumAward = @MaximumAward
-      AND AwardingGroupId = @awardgroup;
+	--left for future troubleshooting
+--SELECT *
+--FROM dbo.ScholarshipAwardAnalysises
+--WHERE AlgorithmId = @algorithmid
+--      AND MaxApplicants = @MaxApplicants
+--      AND MinimumAward = @MinimumAward
+--      AND MaximumAward = @MaximumAward
+--      AND AwardingGroupId = @awardgroup;
 GO
