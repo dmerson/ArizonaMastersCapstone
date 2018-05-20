@@ -44,8 +44,33 @@ WHERE AlgorithmId = @algorithmid
       AND MinimumAward = @MinimumAward
       AND MaxApplicants = @MaxApplicants
       AND AwardingGroupId = @awardgroup;
+
+
+CREATE TABLE #scholarshipordertable
+(
+    [ScholarshipId] INT,
+    scholarshiporder INT
+);
+INSERT INTO #scholarshipordertable
+(
+    ScholarshipId,
+    scholarshiporder
+)
+SELECT ScholarshipId,
+       ROW_NUMBER() OVER (ORDER BY ScholarshipAmount DESC)
+FROM NormalizedView
+WHERE AwardingGroupId = @awardgroup;
+DECLARE @CurrentCounter INT;
+
+
 WHILE @ScholarshipCounter <= @CountOfScholarships
-BEGIN;
+BEGIN
+    SET @CurrentCounter =
+    (
+        SELECT ScholarshipId
+        FROM #scholarshipordertable
+        WHERE scholarshiporder = @ScholarshipCounter
+    );
 
     --amount in pool
     SET @CurrentAmount =
@@ -53,7 +78,7 @@ BEGIN;
         SELECT TOP 1
                ScholarshipAmount
         FROM dbo.NormalizedView
-        WHERE ScholarshipId = @ScholarshipCounter
+        WHERE ScholarshipId = @CurrentCounter
               AND AwardingGroupId = @awardgroup
     );
 
@@ -72,7 +97,7 @@ BEGIN;
     (
         SELECT COUNT(ApplicantId) TotalApplicants
         FROM dbo.NormalizedView
-        WHERE ScholarshipId = @ScholarshipCounter
+        WHERE ScholarshipId = @CurrentCounter
               AND AwardingGroupId = @awardgroup
     );
 
@@ -122,16 +147,12 @@ BEGIN;
                @CurrentSplitAmount CurrentAmount,
                ROW_NUMBER() OVER (ORDER BY Ranking) OrderId
         FROM dbo.NormalizedView
-        WHERE ScholarshipId = @ScholarshipCounter
+        WHERE ScholarshipId = @CurrentCounter
               AND AwardingGroupId = @awardgroup
     ) OrderGroup
     WHERE OrderGroup.OrderId <= @peopletodivdeby
     ORDER BY OrderGroup.OrderId ASC;
-    PRINT 'Current Winner is applicant:';
-    PRINT @CurrentWinner;
-    PRINT 'For the scholarship';
-    PRINT @CurrentScholarshipId;
-
+   
 
 
 
@@ -139,7 +160,7 @@ BEGIN;
 
     SET @ScholarshipCounter = @ScholarshipCounter + 1;
 END;
-
+DROP TABLE #scholarshipordertable
 --left for future troubleshooting possibilites
 --SELECT *
 --FROM dbo.ScholarshipAwards

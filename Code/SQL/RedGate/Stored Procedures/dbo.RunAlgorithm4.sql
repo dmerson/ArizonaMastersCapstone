@@ -19,10 +19,12 @@ DECLARE @algorithmid INT = 4;
 DECLARE @CountOfScholarships INT =
         (
             SELECT COUNT(DISTINCT ScholarshipId) FROM dbo.NormalizedView
+			WHERE AwardingGroupId =@awardgroup
         );
 DECLARE @CountOfApplicants INT =
         (
             SELECT COUNT(DISTINCT ApplicantId) FROM dbo.NormalizedView
+			WHERE AwardingGroupId =@awardgroup
         );
 
 DECLARE @ScholarshipCounter INT = 1;
@@ -39,13 +41,37 @@ WHERE AlgorithmId = @algorithmid
       AND MinimumAward = @MinimumAward
       AND MaxApplicants = @MaxApplicants
 	  AND AwardingGroupId=@awardgroup;
+
+
+
+CREATE TABLE #scholarshipordertable
+(
+    [ScholarshipId] INT,
+    scholarshiporder INT
+);
+INSERT INTO #scholarshipordertable
+(
+    ScholarshipId,
+    scholarshiporder
+)
+SELECT ScholarshipId,
+       ROW_NUMBER() OVER (ORDER BY ScholarshipAmount DESC)
+FROM NormalizedView
+WHERE AwardingGroupId = @awardgroup;
+DECLARE @CurrentCounter INT;
 WHILE @ScholarshipCounter <= @CountOfScholarships
-BEGIN;
+BEGIN
+    SET @CurrentCounter =
+    (
+        SELECT ScholarshipId
+        FROM #scholarshipordertable
+        WHERE scholarshiporder = @ScholarshipCounter
+    );
     SET @CurrentAmount =
     (
         SELECT TOP 1 ScholarshipAmount
         FROM dbo.NormalizedView
-        WHERE ScholarshipId = @ScholarshipCounter AND AwardingGroupId=@awardgroup
+        WHERE ScholarshipId = @CurrentCounter AND AwardingGroupId=@awardgroup
     );
     WITH currenttotals
     AS (SELECT ApplicantId,
@@ -65,7 +91,7 @@ BEGIN;
            @CurrentScholarshipApplicantId = ScholarshipApplicantId,
            @CurrentAmount = ScholarshipAmount
     FROM dbo.NormalizedView
-    WHERE ScholarshipId = @ScholarshipCounter
+    WHERE ScholarshipId = @CurrentCounter
           AND ApplicantId NOT IN
               (
                   SELECT ApplicantId FROM currenttotals
@@ -101,7 +127,7 @@ BEGIN;
 
     SET @ScholarshipCounter = @ScholarshipCounter + 1;
 END;
-
+DROP TABLE #scholarshipordertable
 --SELECT *
 --FROM dbo.ScholarshipAwards
 --WHERE AlgorithmId = @algorithmid

@@ -1,5 +1,5 @@
 DECLARE @algorithmid INT = 1;
-DECLARE @awardgroup INT = 1;
+DECLARE @awardgroup INT = 2;
 DECLARE @MaximumAward DECIMAL = 1500;
 DECLARE @MinimumAward DECIMAL = 500;
 DECLARE @MaxApplicants INT = 2;
@@ -35,15 +35,16 @@ WHERE AlgorithmId = @algorithmid
       AND MinimumAward = @MinimumAward
       AND MaxApplicants = @MaxApplicants
       AND AwardingGroupId = @awardgroup;
-CREATE TABLE #temptable
+
+
+CREATE TABLE #scholarshiplooptable
 (
     [scholarship] VARCHAR(255),
-    [ScholarshipId] INT
+    [Scholarshiporder] INT
 );
-INSERT INTO #temptable
-(
+INSERT INTO #scholarshiplooptable(
     scholarship,
-    ScholarshipId
+    Scholarshiporder
 )
  
 SELECT Scholarship,
@@ -55,26 +56,33 @@ FROM
     FROM dbo.DenormalizedEntries
 ) UniqueScholarships
 ORDER BY ScholarshipId;
-SELECT * FROM #temptable
+ 
 
-SET @CountOfScholarships =(SELECT MAX(scholarshipid) FROM #temptable)
+SET @CountOfScholarships =(SELECT MAX(Scholarshiporder) FROM #scholarshiplooptable)
+DECLARE @CurrentLoopScholarshipName VARCHAR(255)
+
 WHILE @ScholarshipCounter <= @CountOfScholarships
 BEGIN
-SELECT @ScholarshipCounter CounterArg
+
+SET @CurrentLoopScholarshipName=(SELECT TOP 1 scholarship from #scholarshiplooptable
+  WHERE scholarshiporder =@ScholarshipCounter)
+  
+ 
+
     SELECT TOP 1
-           @CurrentScholarship = .DenormalizedEntriesScholarship,
+           @CurrentScholarship =@CurrentLoopScholarshipName,
            @CurrentWinner = Applicant,
            @CurrentAmount = ScholarshipAward,
            @CurrentScholarshipApplicantId = DenormalizedEntryId
     FROM dbo.DenormalizedEntries
-	INNER JOIN #temptable ON #temptable.scholarship = DenormalizedEntries.Scholarship
-    WHERE ScholarshipId = @ScholarshipCounter
+	 
+    WHERE Scholarship=@CurrentLoopScholarshipName
           AND AwardingGroupId = @awardgroup
     ORDER BY ApplicantRanking ASC;
-    PRINT 'Current Winner is applicant:';
-    SELECT  @CurrentWinner CurrentWinner;
-    PRINT 'For the scholarship';
-    SELECT  @CurrentScholarship CurrentScholarship;
+    --PRINT 'Current Winner is applicant:';
+    --SELECT  @CurrentWinner CurrentWinner;
+    --PRINT 'For the scholarship';
+    --SELECT  @CurrentScholarship CurrentScholarship;
 
 
 
@@ -101,7 +109,7 @@ SELECT @ScholarshipCounter CounterArg
 
     SET @ScholarshipCounter = @ScholarshipCounter + 1;
 END;
-DROP TABLE #temptable
+DROP TABLE #scholarshiplooptable
 SELECT *
 FROM dbo.DenormalizedEntyResults
 WHERE AlgorithmId = @algorithmid

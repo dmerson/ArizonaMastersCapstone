@@ -7,7 +7,12 @@ CREATE TABLE [dbo].[DenormalizedEntryAnalysises]
 [MinimumAward] [decimal] (9, 2) NULL,
 [MaxApplicants] [int] NULL,
 [RA1] [bit] NOT NULL,
-[RA2] [bit] NOT NULL
+[RA2] [bit] NOT NULL,
+[RA3] [bit] NOT NULL,
+[NumberOfAwarded] [int] NOT NULL,
+[UniqueAwardees] [int] NOT NULL,
+[MaximumAwarded] [int] NOT NULL,
+[MiniumumAwarded] [int] NOT NULL
 ) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[DenormalizedEntryAnalysises] ADD CONSTRAINT [PK_DenormalizedEntryAnalysises] PRIMARY KEY CLUSTERED  ([DenormalizedEntryAnalysisId]) ON [PRIMARY]

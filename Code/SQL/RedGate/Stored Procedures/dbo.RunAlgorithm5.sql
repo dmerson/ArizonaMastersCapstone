@@ -20,10 +20,12 @@ DECLARE @algorithmid INT = 5;
 DECLARE @CountOfScholarships INT =
         (
             SELECT COUNT(DISTINCT ScholarshipId) FROM dbo.NormalizedView
+			WHERE AwardingGroupId =@awardgroup
         );
 DECLARE @CountOfApplicants INT =
         (
             SELECT COUNT(DISTINCT ApplicantId) FROM dbo.NormalizedView
+			WHERE AwardingGroupId =@awardgroup
         );
 
 DECLARE @ScholarshipCounter INT = 1;
@@ -40,14 +42,40 @@ WHERE AlgorithmId = @algorithmid
       AND MinimumAward = @MinimumAward
       AND MaxApplicants = @MaxApplicants
       AND AwardingGroupId = @awardgroup;
+
+
+
+CREATE TABLE #scholarshipordertable
+(
+    [ScholarshipId] INT,
+    scholarshiporder INT
+);
+INSERT INTO #scholarshipordertable
+(
+    ScholarshipId,
+    scholarshiporder
+)
+SELECT ScholarshipId,
+       ROW_NUMBER() OVER (ORDER BY ScholarshipAmount DESC)
+FROM NormalizedView
+WHERE AwardingGroupId = @awardgroup;
+DECLARE @CurrentCounter INT;
 WHILE @ScholarshipCounter <= @CountOfScholarships
-BEGIN;
+
+
+BEGIN
+    SET @CurrentCounter =
+    (
+        SELECT ScholarshipId
+        FROM #scholarshipordertable
+        WHERE scholarshiporder = @ScholarshipCounter
+    );
     SET @CurrentAmount =
     (
         SELECT TOP 1
                ScholarshipAmount
         FROM dbo.NormalizedView
-        WHERE ScholarshipId = @ScholarshipCounter
+        WHERE ScholarshipId = @CurrentCounter
               AND AwardingGroupId = @awardgroup
     );
 	 
@@ -55,7 +83,7 @@ BEGIN;
     (
         SELECT COUNT(ApplicantId)
         FROM dbo.NormalizedView
-    WHERE ScholarshipId = @ScholarshipCounter
+    WHERE ScholarshipId = @CurrentCounter
           AND AwardingGroupId = @awardgroup
     );
 	 
@@ -81,7 +109,7 @@ BEGIN;
            ApplicantId,
            @CurrentSplitAmount
     FROM dbo.NormalizedView
-    WHERE ScholarshipId = @ScholarshipCounter
+    WHERE ScholarshipId = @CurrentCounter
           AND AwardingGroupId = @awardgroup
     ORDER BY Ranking ASC;
     PRINT 'Current Winner is applicant:';
@@ -97,6 +125,7 @@ BEGIN;
     SET @ScholarshipCounter = @ScholarshipCounter + 1;
 END;
 
+DROP TABLE #scholarshipordertable
 --left for future troubleshooting
 --SELECT *
 --FROM dbo.ScholarshipAwards
