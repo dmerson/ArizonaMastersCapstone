@@ -4,18 +4,21 @@ DECLARE @MaximumAward DECIMAL = 1500;
 DECLARE @MinimumAward DECIMAL = 500;
 DECLARE @MaxApplicants INT = 2;
 
-SELECT * FROM dbo.Algorithms
-WHERE AlgorithmId=@algorithmid
+SELECT *
+FROM dbo.Algorithms
+WHERE AlgorithmId = @algorithmid;
 
 DECLARE @CountOfScholarships INT =
         (
-            SELECT COUNT(DISTINCT ScholarshipId) FROM dbo.NormalizedView
-			WHERE AwardingGroupId =@awardgroup
+            SELECT COUNT(DISTINCT ScholarshipId)
+            FROM dbo.NormalizedView
+            WHERE AwardingGroupId = @awardgroup
         );
 DECLARE @CountOfApplicants INT =
         (
-            SELECT COUNT(DISTINCT ApplicantId) FROM dbo.NormalizedView
-			WHERE AwardingGroupId =@awardgroup
+            SELECT COUNT(DISTINCT ApplicantId)
+            FROM dbo.NormalizedView
+            WHERE AwardingGroupId = @awardgroup
         );
 
 DECLARE @ScholarshipCounter INT = 1;
@@ -23,16 +26,40 @@ DECLARE @CurrentWinner INT;
 DECLARE @CurrentScholarshipId INT;
 DECLARE @CurrentAmount DECIMAL(9, 2);
 DECLARE @CurrentScholarshipApplicantId INT;
- 
- 
+
+
 
 DELETE FROM dbo.ScholarshipAwards
 WHERE AlgorithmId = @algorithmid
       AND MaximumAward = @MaximumAward
       AND MinimumAward = @MinimumAward
-      AND MaxApplicants = @MaxApplicants AND AwardingGroupId=@awardgroup;
+      AND MaxApplicants = @MaxApplicants
+      AND AwardingGroupId = @awardgroup;
+
+CREATE TABLE #scholarshipordertable
+(
+    [ScholarshipId] INT,
+    scholarshiporder INT
+);
+INSERT INTO #scholarshipordertable
+(
+    ScholarshipId,
+    scholarshiporder
+)
+SELECT ScholarshipId,
+       ROW_NUMBER() OVER (ORDER BY ScholarshipAmount DESC)
+FROM NormalizedView
+WHERE AwardingGroupId = @awardgroup;
+DECLARE @CurrentCounter INT;
 WHILE @ScholarshipCounter <= @CountOfScholarships
 BEGIN
+    SET @CurrentCounter =
+    (
+        SELECT ScholarshipId
+        FROM #scholarshipordertable
+        WHERE scholarshiporder = @ScholarshipCounter
+    );
+
     SELECT TOP 1
            @CurrentScholarshipId = ScholarshipId,
            @CurrentWinner = ApplicantId,
@@ -40,57 +67,56 @@ BEGIN
            @CurrentScholarshipApplicantId = ScholarshipApplicantId,
            @CurrentAmount = ScholarshipAmount
     FROM dbo.NormalizedView
-    WHERE ScholarshipId = @ScholarshipCounter AND AwardingGroupId=@awardgroup
+    WHERE ScholarshipId = @CurrentCounter
+          AND AwardingGroupId = @awardgroup
     ORDER BY Ranking ASC;
     PRINT 'Current Winner is applicant:';
     PRINT @CurrentWinner;
     PRINT 'For the scholarship';
     PRINT @CurrentScholarshipId;
 
-     
-   
-   INSERT INTO dbo.ScholarshipAwards
-   (
-       AwardingGroupId,
-       AlgorithmId,
-       MaximumAward,
-       MinimumAward,
-       MaxApplicants,
-       ScholarshipId,
-       ApplicantId,
-       Award
-   )
-   
+
+
+    INSERT INTO dbo.ScholarshipAwards
+    (
+        AwardingGroupId,
+        AlgorithmId,
+        MaximumAward,
+        MinimumAward,
+        MaxApplicants,
+        ScholarshipId,
+        ApplicantId,
+        Award
+    )
     VALUES
-    (   @awardgroup,
-		@algorithmid,                   -- AlgorithmId - int
-        @MaximumAward,                  -- MaximumAward - decimal(9, 2)
-        @MinimumAward,                  -- MinimumAward - decimal(9, 2)
-        @MaxApplicants,                 -- MaxApplicants - int
-        @CurrentScholarshipId, -- ScholarshipApplicantId - int
-		@CurrentWinner,
-        @CurrentAmount                  -- Award - decimal(9, 2)
+    (   @awardgroup, @algorithmid,     -- AlgorithmId - int
+        @MaximumAward,                 -- MaximumAward - decimal(9, 2)
+        @MinimumAward,                 -- MinimumAward - decimal(9, 2)
+        @MaxApplicants,                -- MaxApplicants - int
+        @CurrentScholarshipId,         -- ScholarshipApplicantId - int
+        @CurrentWinner, @CurrentAmount -- Award - decimal(9, 2)
         );
 
     SET @ScholarshipCounter = @ScholarshipCounter + 1;
 END;
-
+DROP TABLE #scholarshipordertable;
 SELECT *
 FROM dbo.ScholarshipAwards
 WHERE AlgorithmId = @algorithmid
       AND MaxApplicants = @MaxApplicants
       AND MinimumAward = @MinimumAward
       AND MaximumAward = @MaximumAward
-	  AND AwardingGroupId=@awardgroup;
+      AND AwardingGroupId = @awardgroup;
 
-SELECT ApplicantId, SUM(Award) Total	 FROM dbo.ScholarshipAwards
- 
+SELECT ApplicantId,
+       SUM(Award) Total
+FROM dbo.ScholarshipAwards
 WHERE AlgorithmId = @algorithmid
       AND MaxApplicants = @MaxApplicants
       AND MinimumAward = @MinimumAward
       AND MaximumAward = @MaximumAward
-	  AND AwardingGroupId=@awardgroup
-	  GROUP BY ApplicantId;
+      AND AwardingGroupId = @awardgroup
+GROUP BY ApplicantId;
 
 
 DELETE FROM dbo.ScholarshipAwardAnalysises
@@ -230,7 +256,8 @@ FROM ra1checkraw
         ON ra3table.AwardingGroupId = ra1checkraw.AwardingGroupId
     INNER JOIN otherstats
         ON otherstats.AwardingGroupId = ra1checkraw.AwardingGroupId
-	INNER JOIN maxmin ON maxmin.AwardingGroupId = ra1checkraw.AwardingGroupId;
+    INNER JOIN maxmin
+        ON maxmin.AwardingGroupId = ra1checkraw.AwardingGroupId;
 
 
 SELECT *

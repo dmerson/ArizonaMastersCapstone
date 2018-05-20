@@ -31,8 +31,29 @@ WHERE AlgorithmId = @algorithmid
       AND MaximumAward = @MaximumAward
       AND MinimumAward = @MinimumAward
       AND MaxApplicants = @MaxApplicants AND AwardingGroupId=@awardgroup;
+CREATE TABLE #scholarshipordertable
+(
+    [ScholarshipId] INT,
+    scholarshiporder INT
+);
+INSERT INTO #scholarshipordertable
+(
+    ScholarshipId,
+    scholarshiporder
+)
+SELECT ScholarshipId,
+       ROW_NUMBER() OVER (ORDER BY ScholarshipAmount DESC)
+FROM NormalizedView
+WHERE AwardingGroupId = @awardgroup;
+DECLARE @CurrentCounter INT;
 WHILE @ScholarshipCounter <= @CountOfScholarships
-BEGIN;
+BEGIN
+    SET @CurrentCounter =
+    (
+        SELECT ScholarshipId
+        FROM #scholarshipordertable
+        WHERE scholarshiporder = @ScholarshipCounter
+    );
     WITH currenttotals
     AS (SELECT ApplicantId,
                SUM(Award) Total
@@ -51,7 +72,7 @@ BEGIN;
            @CurrentScholarshipApplicantId = ScholarshipApplicantId,
            @CurrentAmount = ScholarshipAmount
     FROM dbo.NormalizedView
-    WHERE ScholarshipId = @ScholarshipCounter
+    WHERE ScholarshipId = @CurrentCounter
           AND ApplicantId NOT IN
               (
                   SELECT ApplicantId FROM currenttotals
@@ -87,7 +108,7 @@ BEGIN;
 
     SET @ScholarshipCounter = @ScholarshipCounter + 1;
 END;
-
+DROP TABLE #scholarshipordertable
 SELECT *
 FROM dbo.ScholarshipAwards
 WHERE AlgorithmId = @algorithmid
