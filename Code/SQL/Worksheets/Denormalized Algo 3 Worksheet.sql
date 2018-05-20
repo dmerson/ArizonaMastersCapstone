@@ -160,7 +160,9 @@ AS (SELECT DenormalizedEntyResults.AwardingGroupId,
            ISNULL(LEAD(SUM(AwardAmount)) OVER (ORDER BY ApplicantRanking), 0) NextAmount
     FROM dbo.DenormalizedEntyResults
 	INNER JOIN dbo.DenormalizedEntries ON DenormalizedEntries.AwardingGroupId = DenormalizedEntyResults.AwardingGroupId
-    WHERE AlgorithmId = @algorithmid
+    AND DenormalizedEntries.Applicant = DenormalizedEntyResults.Applicant
+			AND DenormalizedEntries.Scholarship = DenormalizedEntyResults.Scholarship
+	WHERE AlgorithmId = @algorithmid
           AND MaxApplicants = @MaxApplicants
           AND MinimumAward = @MinimumAward
           AND MaximumAward = @MaximumAward
