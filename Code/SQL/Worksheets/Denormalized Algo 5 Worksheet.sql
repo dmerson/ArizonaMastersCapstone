@@ -7,21 +7,11 @@ DECLARE @MaxApplicants INT = 2;
 SELECT *
 FROM dbo.Algorithms
 WHERE AlgorithmId = @algorithmid;
---SELECT * FROM dbo.DenormalizedEntries
---WHERE AwardingGroupId =@awardgroup
-
-DECLARE @CountOfScholarships INT =
-        (
-            SELECT COUNT(DISTINCT Scholarship)
-            FROM dbo.DenormalizedEntries
-            WHERE AwardingGroupId = @awardgroup
-        );
  
-DECLARE @ScholarshipCounter INT = 1;
-DECLARE @CurrentWinner VARCHAR(100);
-DECLARE @CurrentScholarshipId VARCHAR(255);
-DECLARE @CurrentAmount DECIMAL(9, 2);
-DECLARE @CurrentScholarshipApplicantId VARCHAR(100);
+ 
+
+
+ 
 
 
 
@@ -51,14 +41,24 @@ FROM
     FROM dbo.DenormalizedEntries
 ) UniqueScholarships
 ORDER BY ScholarshipId;
-
-DECLARE @CurrentCounter VARCHAR(255);
+--set max loop id
+DECLARE @CountOfScholarships INT =
+        (
+            SELECT COUNT(DISTINCT Scholarship)
+            FROM #scholarshiplooptable
+        );
+DECLARE @ScholarshipCounter INT = 1;
 
 DECLARE @CurrentScholarshipApplicants VARCHAR(100)
-DECLARE @CurrentSplitAmount DECIMAL(9,2)
+
 
 WHILE @ScholarshipCounter <= @CountOfScholarships
 BEGIN
+	DECLARE @CurrentWinner VARCHAR(100);
+	DECLARE @CurrentScholarshipId VARCHAR(255);
+	DECLARE @CurrentAmount DECIMAL(9, 2);
+	DECLARE @CurrentSplitAmount DECIMAL(9,2)
+	DECLARE @CurrentCounter VARCHAR(255);
     SET @CurrentCounter =
     (
         SELECT Scholarship
