@@ -1,3 +1,4 @@
+
 DECLARE @algorithmid INT = 6;
 DECLARE @awardgroup INT = 2;
 DECLARE @MaximumAward DECIMAL = 1000;

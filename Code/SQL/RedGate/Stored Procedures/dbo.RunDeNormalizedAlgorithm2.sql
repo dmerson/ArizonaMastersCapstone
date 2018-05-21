@@ -1,10 +1,19 @@
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_NULLS ON
+GO
 
-
+Create PROC [dbo].[RunDeNormalizedAlgorithm2]
+    @awardgroup INT,
+    @MaximumAward DECIMAL(9, 2),
+    @MinimumAward DECIMAL(9, 2),
+    @MaxApplicants INT
+AS
 DECLARE @algorithmid INT = 2;
-DECLARE @awardgroup INT = 2;
-DECLARE @MaximumAward DECIMAL = 1500;
-DECLARE @MinimumAward DECIMAL = 500;
-DECLARE @MaxApplicants INT = 2;
+--DECLARE @awardgroup INT = 2;
+--DECLARE @MaximumAward DECIMAL = 1500;
+--DECLARE @MinimumAward DECIMAL = 500;
+--DECLARE @MaxApplicants INT = 2;
 
 SELECT *
 FROM dbo.Algorithms
@@ -154,3 +163,4 @@ EXEC dbo.CreateDenormalizedEntryAnalysis @algorithmid ,     -- int
                                          @MinimumAward , -- decimal(9, 2)
                                          @MaximumAward , -- decimal(9, 2)
                                          @awardgroup       -- int
+GO

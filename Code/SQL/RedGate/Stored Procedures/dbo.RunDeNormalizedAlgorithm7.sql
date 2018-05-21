@@ -1,9 +1,18 @@
-
-DECLARE @algorithmid INT = 3;
-DECLARE @awardgroup INT = 2;
-DECLARE @MaximumAward DECIMAL = 1000;
-DECLARE @MinimumAward DECIMAL = 500;
-DECLARE @MaxApplicants INT = 2;
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_NULLS ON
+GO
+CREATE PROC [dbo].[RunDeNormalizedAlgorithm7]
+    @awardgroup INT,
+    @MaximumAward DECIMAL(9, 2),
+    @MinimumAward DECIMAL(9, 2),
+    @MaxApplicants INT
+AS
+DECLARE @algorithmid INT = 7;
+--DECLARE @awardgroup INT = 2;
+--DECLARE @MaximumAward DECIMAL = 1000;
+--DECLARE @MinimumAward DECIMAL = 500;
+--DECLARE @MaxApplicants INT = 2;
 
 SELECT *
 FROM dbo.Algorithms
@@ -55,8 +64,10 @@ ORDER BY ScholarshipId;
 
 DECLARE @CurrentCounter VARCHAR(255);
 
-
-
+DECLARE @CurrentScholarshipApplicants int
+DECLARE @CurrentSplitAmount DECIMAL(9,2)
+DECLARE @applicantswithMinimumAmounts INT ;
+DECLARE @peopletodivdeby INT;
 WHILE @ScholarshipCounter <= @CountOfScholarships
 BEGIN
     SET @CurrentCounter =
@@ -65,42 +76,47 @@ BEGIN
         FROM #scholarshiplooptable
         WHERE scholarshiporder = @ScholarshipCounter
     );
-    SET @CurrentAmount =
+       SET @CurrentAmount =
     (
         SELECT TOP 1 ScholarshipAward
         FROM dbo.DenormalizedEntries
         WHERE Scholarship = @CurrentCounter AND AwardingGroupId=@awardgroup
     );
-    ;WITH currenttotals
-    AS (SELECT Applicant,
-               SUM(AwardAmount)  Total
-        FROM dbo.DenormalizedEntyResults
-        WHERE AlgorithmId = @algorithmid
-              AND MaxApplicants = @MaxApplicants
-              AND MinimumAward = @MinimumAward
-              AND MaximumAward = @MaximumAward
-			  AND AwardingGroupId=@awardgroup
-        GROUP BY Applicant
-        HAVING SUM(AwardAmount) +  @CurrentAmount  > @MaximumAward)
-    SELECT TOP 1
-           @CurrentScholarshipId = Scholarship,
-           @CurrentWinner = Applicant,
-           
-           @CurrentAmount =ScholarshipAward
-    FROM dbo.DenormalizedEntries
-    WHERE Scholarship = @CurrentCounter
-          AND Applicant NOT IN
-              (
-                  SELECT currenttotals.Applicant FROM currenttotals
-              )
-			  AND AwardingGroupId=@awardgroup
-    ORDER BY ApplicantRanking ASC;
-    PRINT 'Current Winner is applicant:';
-    PRINT @CurrentWinner;
-    PRINT 'For the scholarship';
-    PRINT @CurrentScholarshipId;
 
-	 
+	PRINT @CurrentAmount
+
+    ---max number of people who can win
+    SET @applicantswithMinimumAmounts =
+    (
+        SELECT CONVERT(INT, @CurrentAmount / @MinimumAward)
+    );
+	IF @applicantswithMinimumAmounts=0
+	BEGIN
+		SET @applicantswithMinimumAmounts=1
+	end
+    --total number of people in pool
+    SET @CurrentScholarshipApplicants =
+    (
+        SELECT COUNT(Applicant) TotalApplicants
+        FROM dbo.DenormalizedEntries
+        WHERE Scholarship = @CurrentCounter
+              AND AwardingGroupId = @awardgroup
+    );
+
+    ---set which ever is lower max number or total real number in pool
+    SET @peopletodivdeby =
+    (
+        SELECT CASE
+                   WHEN @CurrentScholarshipApplicants < @applicantswithMinimumAmounts THEN
+                       @CurrentScholarshipApplicants
+                   ELSE
+                       @applicantswithMinimumAmounts
+               END
+    );
+
+    -- divide people by current amount
+    SET @CurrentSplitAmount = @CurrentAmount / CONVERT(DECIMAL(9, 2), @peopletodivdeby);
+
 
     INSERT INTO dbo.DenormalizedEntyResults
     (
@@ -112,23 +128,47 @@ BEGIN
         Scholarship,
         Applicant,
         AwardAmount
-    )
- 
-    VALUES
-    (   @awardgroup,
-		 @algorithmid,     -- AlgorithmId - int
-        @MaximumAward,                 -- MaximumAward - decimal(9, 2)
-        @MinimumAward,                 -- MinimumAward - decimal(9, 2)
-        @MaxApplicants,                -- MaxApplicants - int
-        @CurrentScholarshipId,         -- ScholarshipApplicantId - int
-        @CurrentWinner,
-		 @CurrentAmount -- Award - decimal(9, 2)
-        );
+    ) 
+    SELECT OrderGroup.AwardGroup,
+           OrderGroup.AlgorithmId,
+           OrderGroup.MaximumAward,
+           OrderGroup.MinimumAward,
+           OrderGroup.MaxApplicants,
+           OrderGroup.scholarship,
+           OrderGroup.applicant,
+           OrderGroup.CurrentAmount
+    FROM
+    (
+        SELECT @awardgroup AwardGroup,
+               @algorithmid AlgorithmId,
+               @MaximumAward MaximumAward,
+               @MinimumAward MinimumAward,
+               @MaxApplicants MaxApplicants,
+               scholarship,
+               Applicant,
+               @CurrentSplitAmount CurrentAmount,
+               ROW_NUMBER() OVER (ORDER BY ApplicantRanking) OrderId
+        FROM dbo.DenormalizedEntries
+        WHERE Scholarship = @CurrentCounter
+              AND AwardingGroupId = @awardgroup
+    ) OrderGroup
+    WHERE OrderGroup.OrderId <= @peopletodivdeby
+    ORDER BY OrderGroup.OrderId ASC;
+    PRINT 'Current Winner is applicant:';
+    PRINT @CurrentWinner;
+    PRINT 'For the scholarship';
+    PRINT @CurrentScholarshipId;
+
+
+
+
+
 
     SET @ScholarshipCounter = @ScholarshipCounter + 1;
 END;
-
 DROP TABLE #scholarshiplooptable
+
+
 SELECT *
 FROM dbo.DenormalizedEntyResults
 WHERE AlgorithmId = @algorithmid
@@ -146,8 +186,11 @@ WHERE AlgorithmId = @algorithmid
 GROUP BY Applicant
 ORDER BY Total desc;
 
+ 
+
 EXEC dbo.CreateDenormalizedEntryAnalysis @algorithmid ,     -- int
                                          @MaxApplicants ,   -- int
                                          @MinimumAward , -- decimal(9, 2)
                                          @MaximumAward , -- decimal(9, 2)
                                          @awardgroup       -- int
+GO
