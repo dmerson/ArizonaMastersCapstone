@@ -49,7 +49,7 @@ DECLARE @CountOfScholarships INT =
         );
 DECLARE @ScholarshipCounter INT = 1;
 
-DECLARE @CurrentScholarshipApplicants VARCHAR(100)
+
 
 
 WHILE @ScholarshipCounter <= @CountOfScholarships
@@ -58,7 +58,9 @@ BEGIN
 	DECLARE @CurrentScholarshipId VARCHAR(255);
 	DECLARE @CurrentAmount DECIMAL(9, 2);
 	DECLARE @CurrentSplitAmount DECIMAL(9,2)
+	DECLARE @CurrentScholarshipApplicants VARCHAR(100)
 	DECLARE @CurrentCounter VARCHAR(255);
+
     SET @CurrentCounter =
     (
         SELECT Scholarship
@@ -105,15 +107,6 @@ BEGIN
     WHERE Scholarship = @CurrentCounter
           AND AwardingGroupId = @awardgroup
     ORDER BY ApplicantRanking ASC;
-    PRINT 'Current Winner is applicant:';
-    PRINT @CurrentWinner;
-    PRINT 'For the scholarship';
-    PRINT @CurrentScholarshipId;
-
-
-
-
-
 
     SET @ScholarshipCounter = @ScholarshipCounter + 1;
 END;
