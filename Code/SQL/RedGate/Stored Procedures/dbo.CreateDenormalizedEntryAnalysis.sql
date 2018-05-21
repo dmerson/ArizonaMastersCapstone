@@ -153,11 +153,11 @@ FROM ra1checkraw
         ON maxmin.AwardingGroupId = ra1checkraw.AwardingGroupId;
 
 
-SELECT *
-FROM dbo.DenormalizedEntryAnalysises
-WHERE AlgorithmId = @algorithmid
-      AND MaxApplicants = @MaxApplicants
-      AND MinimumAward = @MinimumAward
-      AND MaximumAward = @MaximumAward
-      AND AwardingGroupId = @awardgroup;
+--SELECT *
+--FROM dbo.DenormalizedEntryAnalysises
+--WHERE AlgorithmId = @algorithmid
+--      AND MaxApplicants = @MaxApplicants
+--      AND MinimumAward = @MinimumAward
+--      AND MaximumAward = @MaximumAward
+--      AND AwardingGroupId = @awardgroup;
 GO

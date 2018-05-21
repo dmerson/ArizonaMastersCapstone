@@ -14,9 +14,9 @@ DECLARE @algorithmid INT = 7;
 --DECLARE @MinimumAward DECIMAL = 500;
 --DECLARE @MaxApplicants INT = 2;
 
-SELECT *
-FROM dbo.Algorithms
-WHERE AlgorithmId = @algorithmid;
+--SELECT *
+--FROM dbo.Algorithms
+--WHERE AlgorithmId = @algorithmid;
 --SELECT * FROM dbo.DenormalizedEntries
 --WHERE AwardingGroupId =@awardgroup
 
@@ -169,22 +169,22 @@ END;
 DROP TABLE #scholarshiplooptable
 
 
-SELECT *
-FROM dbo.DenormalizedEntyResults
-WHERE AlgorithmId = @algorithmid
-      AND MaxApplicants = @MaxApplicants
-      AND MinimumAward = @MinimumAward
-      AND MaximumAward = @MaximumAward AND AwardingGroupId=@awardgroup;
+--SELECT *
+--FROM dbo.DenormalizedEntyResults
+--WHERE AlgorithmId = @algorithmid
+--      AND MaxApplicants = @MaxApplicants
+--      AND MinimumAward = @MinimumAward
+--      AND MaximumAward = @MaximumAward AND AwardingGroupId=@awardgroup;
 
-SELECT Applicant,
-       SUM(AwardAmount) Total
-FROM dbo.DenormalizedEntyResults
-WHERE AlgorithmId = @algorithmid
-      AND MaxApplicants = @MaxApplicants
-      AND MinimumAward = @MinimumAward
-      AND MaximumAward = @MaximumAward AND AwardingGroupId=@awardgroup
-GROUP BY Applicant
-ORDER BY Total desc;
+--SELECT Applicant,
+--       SUM(AwardAmount) Total
+--FROM dbo.DenormalizedEntyResults
+--WHERE AlgorithmId = @algorithmid
+--      AND MaxApplicants = @MaxApplicants
+--      AND MinimumAward = @MinimumAward
+--      AND MaximumAward = @MaximumAward AND AwardingGroupId=@awardgroup
+--GROUP BY Applicant
+--ORDER BY Total desc;
 
  
 

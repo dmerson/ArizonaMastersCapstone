@@ -2,7 +2,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
-Create PROC [dbo].[RunDeNormalizedAlgorithm1]
+CREATE PROC [dbo].[RunDeNormalizedAlgorithm1]
     @awardgroup INT,
     @MaximumAward DECIMAL(9, 2),
     @MinimumAward DECIMAL(9, 2),
@@ -14,9 +14,9 @@ DECLARE @algorithmid INT = 1;
 --DECLARE @MinimumAward DECIMAL = 500;
 --DECLARE @MaxApplicants INT = 2;
 
-SELECT *
-FROM dbo.Algorithms
-WHERE AlgorithmId = @algorithmid;
+--SELECT *
+--FROM dbo.Algorithms
+--WHERE AlgorithmId = @algorithmid;
 
 DECLARE @CountOfScholarships INT =
         (
@@ -120,23 +120,23 @@ SET @CurrentLoopScholarshipName=(SELECT TOP 1 scholarship from #scholarshiploopt
     SET @ScholarshipCounter = @ScholarshipCounter + 1;
 END;
 DROP TABLE #scholarshiplooptable
-SELECT *
-FROM dbo.DenormalizedEntyResults
-WHERE AlgorithmId = @algorithmid
-      AND MaxApplicants = @MaxApplicants
-      AND MinimumAward = @MinimumAward
-      AND MaximumAward = @MaximumAward
-      AND AwardingGroupId = @awardgroup;
+--SELECT *
+--FROM dbo.DenormalizedEntyResults
+--WHERE AlgorithmId = @algorithmid
+--      AND MaxApplicants = @MaxApplicants
+--      AND MinimumAward = @MinimumAward
+--      AND MaximumAward = @MaximumAward
+--      AND AwardingGroupId = @awardgroup;
 
-SELECT Applicant,
-       SUM(AwardAmount) Total
-FROM dbo.DenormalizedEntyResults
-WHERE AlgorithmId = @algorithmid
-      AND MaxApplicants = @MaxApplicants
-      AND MinimumAward = @MinimumAward
-      AND MaximumAward = @MaximumAward
-      AND AwardingGroupId = @awardgroup
-GROUP BY Applicant;
+--SELECT Applicant,
+--       SUM(AwardAmount) Total
+--FROM dbo.DenormalizedEntyResults
+--WHERE AlgorithmId = @algorithmid
+--      AND MaxApplicants = @MaxApplicants
+--      AND MinimumAward = @MinimumAward
+--      AND MaximumAward = @MaximumAward
+--      AND AwardingGroupId = @awardgroup
+--GROUP BY Applicant;
 
 EXEC dbo.CreateDenormalizedEntryAnalysis @algorithmid ,     -- int
                                          @MaxApplicants ,   -- int
