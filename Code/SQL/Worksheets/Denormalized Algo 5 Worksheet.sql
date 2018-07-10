@@ -54,14 +54,14 @@ DECLARE @ScholarshipCounter INT = 1;
 
 WHILE @ScholarshipCounter <= @CountOfScholarships
 BEGIN
-	DECLARE @CurrentWinner VARCHAR(100);
-	DECLARE @CurrentScholarshipId VARCHAR(255);
+	--DECLARE @CurrentWinner VARCHAR(100);
+	--DECLARE @CurrentScholarshipId VARCHAR(255);
 	DECLARE @CurrentAmount DECIMAL(9, 2);
 	DECLARE @CurrentSplitAmount DECIMAL(9,2)
-	DECLARE @CurrentScholarshipApplicants VARCHAR(100)
-	DECLARE @CurrentCounter VARCHAR(255);
+	DECLARE @CountOfApplicants VARCHAR(100)
+	DECLARE @CurrentScholarshipName VARCHAR(255);
 
-    SET @CurrentCounter =
+    SET @CurrentScholarshipName =
     (
         SELECT Scholarship
         FROM #scholarshiplooptable
@@ -71,18 +71,18 @@ BEGIN
     (
         SELECT TOP 1 ScholarshipAward
         FROM dbo.DenormalizedEntries
-        WHERE Scholarship = @CurrentCounter AND AwardingGroupId=@awardgroup
+        WHERE Scholarship = @CurrentScholarshipName AND AwardingGroupId=@awardgroup
     );
 	 
-    SET @CurrentScholarshipApplicants =
+    SET @CountOfApplicants =
     (
         SELECT COUNT(Applicant	)
         FROM dbo.DenormalizedEntries
-    WHERE Scholarship = @CurrentCounter
+    WHERE Scholarship = @CurrentScholarshipName
           AND AwardingGroupId = @awardgroup
     );
 	 
-    SET @CurrentSplitAmount = @CurrentAmount / CONVERT(DECIMAL(9, 2), @CurrentScholarshipApplicants);
+    SET @CurrentSplitAmount = @CurrentAmount / CONVERT(DECIMAL(9, 2), @CountOfApplicants);
 
       INSERT INTO dbo.DenormalizedEntyResults
     (
@@ -104,7 +104,7 @@ BEGIN
            Applicant,
            @CurrentSplitAmount
     FROM dbo.DenormalizedEntries
-    WHERE Scholarship = @CurrentCounter
+    WHERE Scholarship = @CurrentScholarshipName
           AND AwardingGroupId = @awardgroup
     ORDER BY ApplicantRanking ASC;
 

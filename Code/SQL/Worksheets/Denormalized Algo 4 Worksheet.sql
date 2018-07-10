@@ -57,16 +57,20 @@ DECLARE @CountOfScholarships INT =
 
 WHILE @ScholarshipCounter <= @CountOfScholarships
 BEGIN
-    DECLARE @CurrentWinner VARCHAR(100);
-    DECLARE @CurrentScholarshipId VARCHAR(255);
-    DECLARE @CurrentAmount DECIMAL(9, 2);
-	DECLARE @CurrentCounter VARCHAR(255);
+    -- Get Current Scholarship 
+    DECLARE @CurrentCounter VARCHAR(255);
     SET @CurrentCounter =
     (
         SELECT scholarship
         FROM #scholarshiplooptable
         WHERE Scholarshiporder = @ScholarshipCounter
     );
+
+    --set up winner variables
+    DECLARE @CurrentWinner VARCHAR(100);
+    DECLARE @CurrentScholarshipId VARCHAR(255);
+    DECLARE @CurrentAmount DECIMAL(9, 2);
+
     SET @CurrentAmount =
     (
         SELECT TOP 1
@@ -75,7 +79,11 @@ BEGIN
         WHERE Scholarship = @CurrentCounter
               AND AwardingGroupId = @awardgroup
     );
-    ;WITH currenttotals
+
+    --remove all previous winners from applicant pool
+    -- get all winners and select where not applicant is not winner
+    ;
+    WITH currenttotals
     AS (SELECT Applicant,
                SUM(AwardAmount) Total
         FROM dbo.DenormalizedEntyResults
@@ -104,7 +112,7 @@ BEGIN
     PRINT @CurrentScholarshipId;
 
 
-
+    --insert results
     INSERT INTO dbo.DenormalizedEntyResults
     (
         AwardingGroupId,
