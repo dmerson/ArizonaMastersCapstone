@@ -15,9 +15,12 @@ Install SQL 2017 (It is possible to use older version if they contain the window
 
 Run this to create the tables, views, and stored procedures inside your newly created database
 
-3. In Code/SQL Server/Database Seeds is a file called Initial Table Data.sql
+3.In Code/SQL Server/Database Seeds is a file called Initial Table Data.sql
 
 Run this to insert the basic tables used by the capstone paper.
 
+You now have enough to start experimenting with a normalized (awardgroupid=1) and denormalized (awardgroupid=2) data. 
+
 #How to create a denormalized file for input
+It is important that all students have only one ranking. It is the ranking by the committee for their overall fit for the institution.
 
