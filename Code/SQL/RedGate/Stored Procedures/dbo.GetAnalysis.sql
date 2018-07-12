@@ -2,7 +2,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
-CREATE PROC [dbo].[RunAnalysis] 
+CREATE PROC [dbo].[GetAnalysis] 
 	@AwardingGroupId INT,
     @MaximumAward DECIMAL(9, 2),
     @MinimumAward DECIMAL(9, 2),
