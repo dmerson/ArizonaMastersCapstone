@@ -125,7 +125,7 @@ DROP TABLE #scholarshipordertable
 --      AND MaximumAward = @MaximumAward
 --      AND AwardingGroupId = @awardgroup
 --GROUP BY ApplicantId;
-EXEC dbo.RunAnalysis @algorithmid ,     -- int
+EXEC dbo.CreateAnalysis @algorithmid ,     -- int
                      @awardgroup ,      -- int
                      @MaximumAward , -- decimal(9, 2)
                      @MinimumAward , -- decimal(9, 2)
