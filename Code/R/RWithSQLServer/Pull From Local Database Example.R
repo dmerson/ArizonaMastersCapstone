@@ -45,7 +45,15 @@ getAnalysis <- function (awarding_group_id,maximum_award,minimum_award,max_appli
 getAnalysis(1,1500,130,2,0)
 
 #create awarding group
-awardinggroupid=getSqlQueryFromSUDB("CreateAwardinGroup 'createdfromr'")[1,1]
+awardinggroupid=getSqlQueryFromSUDB("CreateAwardingGroup 'createdfromr'")[1,1]
+
+#function for creating awarding group
+create_awarding_group_and_get_id <- function(award_group_name){
+  awarding_group_id=getSqlQueryFromSUDB(paste("CreateAwardingGroup '",award_group_name,"'",sep=""))[1,1]
+  return (awarding_group_id)
+}
+create_awarding_group_and_get_id("test2")
+
 
 #insert into denormalized group
 result <- getSqlQueryFromSUDB("[InsertIntoDenormalizedEntry] 5,'S1',1000.00,'A1',1")
@@ -77,4 +85,18 @@ for (i in 1:count_Of_data){
 }
 
 #function to pull from excel file, get awarding group, insert into database, and get analysis
-
+create_analysis_from_spreadsheet <- function (awarding_group_name,filePath,maximum_award,minimum_award,max_applicants,run_analysis_first){
+  awarding_group_id <-create_awarding_group_and_get_id(awarding_group_name)
+  library(readxl)
+  DemoData <- tbl_df(read_excel(filePath))
+  for (i in 1:count_Of_data){
+    scholarship_name =DemoData[i,1]
+    scholarship_amount =DemoData[i,2]
+    applicant_name=DemoData[i,3]
+    applicant_rank =DemoData[i,4]
+    InsertDenormalizedData(awarding_group_id,scholarship_name,scholarship_amount,applicant_name,applicant_rank)
+  }
+  getAnalysis(awarding_group_id,maximum_award,minimum_award,max_applicants,run_analysis_first)
+  
+}
+create_analysis_from_spreadsheet("test case","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/DemoData.xlsx",1500,130,2,1)
