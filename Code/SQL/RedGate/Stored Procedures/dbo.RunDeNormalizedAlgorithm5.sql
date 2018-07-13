@@ -8,17 +8,15 @@ CREATE PROC [dbo].[RunDeNormalizedAlgorithm5]
     @MinimumAward DECIMAL(9, 2),
     @MaxApplicants INT
 AS
+SET NOCOUNT on
 DECLARE @algorithmid INT = 5;
+ --for testing
 --DECLARE @awardgroup INT = 2;
 --DECLARE @MaximumAward DECIMAL = 1000;
 --DECLARE @MinimumAward DECIMAL = 500;
 --DECLARE @MaxApplicants INT = 2;
 
---SELECT *
---FROM dbo.Algorithms
---WHERE AlgorithmId = @algorithmid;
---SELECT * FROM dbo.DenormalizedEntries
---WHERE AwardingGroupId =@awardgroup
+ 
 
 DECLARE @CountOfScholarships INT =
         (
@@ -146,7 +144,7 @@ DROP TABLE #scholarshiplooptable
 --      AND MaximumAward = @MaximumAward AND AwardingGroupId=@awardgroup
 --GROUP BY Applicant
 --ORDER BY Total desc;
-
+ 
 EXEC dbo.CreateDenormalizedEntryAnalysis @algorithmid ,     -- int
                                          @MaxApplicants ,   -- int
                                          @MinimumAward , -- decimal(9, 2)

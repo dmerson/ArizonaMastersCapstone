@@ -8,7 +8,7 @@ CREATE PROC [dbo].[RunDeNormalizedAlgorithm3]
     @MinimumAward DECIMAL(9, 2),
     @MaxApplicants INT
 AS
-
+SET NOCOUNT on
 DECLARE @algorithmid INT = 3;
 --DECLARE @awardgroup INT = 2;
 --DECLARE @MaximumAward DECIMAL = 1000;

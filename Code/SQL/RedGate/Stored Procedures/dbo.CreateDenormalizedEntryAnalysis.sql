@@ -9,6 +9,8 @@ CREATE PROC [dbo].[CreateDenormalizedEntryAnalysis]
     @MaximumAward DECIMAL(9, 2),
     @awardgroup INT
 AS
+SET NOCOUNT ON
+ 
 DELETE FROM dbo.DenormalizedEntryAnalysises
 WHERE AlgorithmId = @algorithmid
       AND MaxApplicants = @MaxApplicants

@@ -8,6 +8,7 @@ CREATE PROC [dbo].[RunAllDenormalizedAlgorithms]
     @MinimumAward DECIMAL(9, 2),
     @MaxApplicants INT
 AS
+SET NOCOUNT on
 EXEC dbo.RunDenormalizedAlgorithm1 @awardgroup,
                        @MaximumAward,
                        @MinimumAward,
@@ -28,10 +29,12 @@ EXEC dbo.RunDenormalizedAlgorithm5 @awardgroup,
                        @MaximumAward,
                        @MinimumAward,
                        @MaxApplicants;
+				 
 EXEC dbo.RunDenormalizedAlgorithm6 @awardgroup,
                        @MaximumAward,
                        @MinimumAward,
                        @MaxApplicants;
+					   
 EXEC dbo.RunDenormalizedAlgorithm7 @awardgroup,
                        @MaximumAward,
                        @MinimumAward,

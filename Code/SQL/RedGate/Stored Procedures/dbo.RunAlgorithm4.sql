@@ -9,6 +9,7 @@ CREATE PROC [dbo].[RunAlgorithm4]
     @MaxApplicants INT
 AS
 DECLARE @algorithmid INT = 4;
+SET NOCOUNT on
 --left for future troubleshooting
 --DECLARE @awardgroup INT = 1;
 --DECLARE @MaximumAward DECIMAL = 1500;

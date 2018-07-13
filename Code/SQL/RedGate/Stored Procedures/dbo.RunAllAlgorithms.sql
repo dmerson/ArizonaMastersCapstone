@@ -8,6 +8,7 @@ CREATE PROC [dbo].[RunAllAlgorithms]
     @MinimumAward DECIMAL(9, 2),
     @MaxApplicants INT
 AS
+SET NOCOUNT on
 EXEC dbo.RunAlgorithm1 @awardgroup,
                        @MaximumAward,
                        @MinimumAward,
