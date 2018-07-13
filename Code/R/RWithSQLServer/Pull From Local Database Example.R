@@ -23,11 +23,14 @@ getSqlQueryFromSUDB <-function(sqlQuery){
 getSqlQueryFromSUDB("Select * from algorithms")
 
 #run all algorithms
-getSqlQueryFromSUDB("RunAllAlgorithms  1,   1000,   310,  2")
-getSqlQueryFromSUDB("RunAlgorithm1  1,   1600,   300,  2")
-getSqlQueryFromSUDB("RunAlgorithm2  1, 1600, 300, 2")
-getSqlQueryFromSUDB("RunAlgorithm3   1, 1000, 310, 2")
-getSqlQueryFromSUDB("RunAlgorithm4   1, 1600, 300, 2")
-getSqlQueryFromSUDB("RunAlgorithm5   1, 1600, 300, 2")
-getSqlQueryFromSUDB("RunAlgorithm6   1, 1600, 300, 2")
-getSqlQueryFromSUDB("RunAlgorithm7   1, 1600, 300, 2")
+# getSqlQueryFromSUDB("RunAllAlgorithms  1,   1000,   310,  2")
+# getSqlQueryFromSUDB("RunAlgorithm1  1,   1600,   300,  2")
+# getSqlQueryFromSUDB("RunAlgorithm2  1, 1600, 300, 2")
+# getSqlQueryFromSUDB("RunAlgorithm3   1, 1000, 310, 2")
+# getSqlQueryFromSUDB("RunAlgorithm4   1, 1600, 300, 2")
+# getSqlQueryFromSUDB("RunAlgorithm5   1, 1600, 300, 2")
+# getSqlQueryFromSUDB("RunAlgorithm6   1, 1600, 300, 2")
+# getSqlQueryFromSUDB("RunAlgorithm7   1, 1600, 300, 2")
+View(getSqlQueryFromSUDB("GetAnalysis   1, 1500, 130, 2, 1"))
+View(getSqlQueryFromSUDB("GetAnalysis   2, 1500, 130, 2, 1"))
+

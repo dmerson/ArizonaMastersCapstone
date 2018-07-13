@@ -56,7 +56,9 @@ AS
                 AwardingGroupId = @AwardingGroupId
                 AND MaxApplicants = @MaxApplicants
                 AND MinimumAward = @MinimumAward
-                AND MaximumAward = @MaximumAward;
+                AND MaximumAward = @MaximumAward
+				ORDER BY RA1 DESC, RA2 DESC, RA3 DESC, UniqueAwardees DESC, MaximumAward DESC, NumberOfAwarded desc
+				;
         END;
     IF @whichTable = 0
         BEGIN
@@ -77,6 +79,8 @@ AS
                 AwardingGroupId = @AwardingGroupId
                 AND MaxApplicants = @MaxApplicants
                 AND MinimumAward = @MinimumAward
-                AND MaximumAward = @MaximumAward;
+                AND MaximumAward = @MaximumAward
+				ORDER BY RA1 DESC, RA2 DESC, RA3 DESC, UniqueAwardees DESC, MaximumAward DESC, NumberOfAwarded desc
+				;
         END;
 GO

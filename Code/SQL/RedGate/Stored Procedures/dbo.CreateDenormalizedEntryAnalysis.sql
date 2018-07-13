@@ -101,8 +101,8 @@ AS (SELECT countranks.AwardingGroupId,
     FROM countranks),
       otherstats
 AS (SELECT DenormalizedEntyResults.AwardingGroupId,
-           COUNT(AwardAmount) NumberOfAwarded,
-           COUNT(DISTINCT ApplicantRanking) UniqueAwardees,
+           COUNT(DISTINCT DenormalizedEntryId) NumberOfAwarded,
+           COUNT(DISTINCT DenormalizedEntries.Applicant) UniqueAwardees,
            MAX(AwardAmount) MaximumAwarded,
            MIN(AwardAmount) MinimumAwarded
     FROM dbo.DenormalizedEntyResults
@@ -113,6 +113,7 @@ AS (SELECT DenormalizedEntyResults.AwardingGroupId,
           AND MinimumAward = @MinimumAward
           AND MaximumAward = @MaximumAward
           AND DenormalizedEntyResults.AwardingGroupId = @awardgroup
+		  AND AwardAmount >0
     GROUP BY DenormalizedEntyResults.AwardingGroupId)
 INSERT INTO dbo.DenormalizedEntryAnalysises
 (
