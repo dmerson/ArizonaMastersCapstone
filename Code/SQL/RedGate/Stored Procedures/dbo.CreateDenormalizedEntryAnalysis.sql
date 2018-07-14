@@ -100,14 +100,14 @@ AS (SELECT countranks.AwardingGroupId,
            END ra3check
     FROM countranks),
       otherstats
-AS (SELECT DenormalizedEntyResults.AwardingGroupId,
-           COUNT(DISTINCT DenormalizedEntryId) NumberOfAwarded,
-           COUNT(DISTINCT DenormalizedEntries.Applicant) UniqueAwardees,
+AS (SELECT distinct DenormalizedEntyResults.AwardingGroupId,
+           COUNT(DISTINCT DenormalizedEntryResultId) NumberOfAwarded,
+           COUNT(DISTINCT Applicant) UniqueAwardees,
            MAX(AwardAmount) MaximumAwarded,
            MIN(AwardAmount) MinimumAwarded
     FROM dbo.DenormalizedEntyResults
-        INNER JOIN dbo.DenormalizedEntries
-            ON DenormalizedEntries.AwardingGroupId = DenormalizedEntyResults.AwardingGroupId
+        --INNER JOIN dbo.DenormalizedEntries
+        --    ON DenormalizedEntries.AwardingGroupId = DenormalizedEntyResults.AwardingGroupId
     WHERE AlgorithmId = @algorithmid
           AND MaxApplicants = @MaxApplicants
           AND MinimumAward = @MinimumAward

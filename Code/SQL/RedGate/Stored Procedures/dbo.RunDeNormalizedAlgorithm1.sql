@@ -9,7 +9,7 @@ CREATE PROC [dbo].[RunDeNormalizedAlgorithm1]
     @MaxApplicants INT
 AS
 
-SET NOCOUNT on
+--SET NOCOUNT on
 DECLARE @algorithmid INT = 1;
 --DECLARE @awardgroup INT = 2;
 --DECLARE @MaximumAward DECIMAL = 1500;
@@ -65,7 +65,7 @@ FROM
 (
     SELECT DISTINCT
            Scholarship,ScholarshipAward
-    FROM dbo.DenormalizedEntries
+    FROM dbo.DenormalizedEntries WHERE AwardingGroupId=@awardgroup
 ) UniqueScholarships
 ORDER BY ScholarshipId;
  

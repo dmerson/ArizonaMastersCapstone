@@ -63,7 +63,7 @@ FROM
 (
     SELECT DISTINCT
            Scholarship,ScholarshipAward
-    FROM dbo.DenormalizedEntries
+    FROM dbo.DenormalizedEntries WHERE AwardingGroupId=@awardgroup
 ) UniqueScholarships
 ORDER BY ScholarshipId;
 

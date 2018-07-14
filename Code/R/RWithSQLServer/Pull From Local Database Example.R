@@ -100,3 +100,5 @@ create_analysis_from_spreadsheet <- function (awarding_group_name,filePath,maxim
   
 }
 create_analysis_from_spreadsheet("test case","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/DemoData.xlsx",1500,130,2,1)
+
+create_analysis_from_spreadsheet("test case2","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/DemoData2.xlsx",1500,130,2,1)
