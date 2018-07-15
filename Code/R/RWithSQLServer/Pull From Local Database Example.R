@@ -14,7 +14,11 @@ library(readxl)
 
 getSqlQueryFromSUDB <-function(sqlQuery){
   library(RODBC)
-  cn <- odbcDriverConnect(connection="driver={SQL Server};server=POWER\\POWER17;database=ScholarshipAwardingSystems;trusted_connection=true")
+  server="TARDIS\\TARDIS" #POWER\\POWER17
+  database="ScholarshipAwardingProcess" #"ScholarshipAwardingSystems"}
+  conn=paste("driver={SQL Server};server=",server,";database=",database,";trusted_connection=true", sep="")
+  print(conn)
+  cn <- odbcDriverConnect(connection=conn)
   resultSet <- sqlQuery(cn,sqlQuery)
   odbcClose(cn)
   return (resultSet)
