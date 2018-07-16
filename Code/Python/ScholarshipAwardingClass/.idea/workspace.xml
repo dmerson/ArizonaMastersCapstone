@@ -17,8 +17,8 @@
       <file leaf-file-name="ScholarshipAwarding.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ScholarshipAwarding.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="249">
-              <caret line="25" column="42" lean-forward="true" selection-start-line="25" selection-start-column="42" selection-end-line="25" selection-end-column="42" />
+            <state relative-caret-position="535">
+              <caret line="89" column="24" lean-forward="true" selection-start-line="89" selection-start-column="24" selection-end-line="89" selection-end-column="24" />
               <folding>
                 <element signature="e#47#60#0" expanded="true" />
               </folding>
@@ -52,8 +52,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/ScholarshipAwarding.py" />
         <option value="$PROJECT_DIR$/VerifyClass.py" />
+        <option value="$PROJECT_DIR$/ScholarshipAwarding.py" />
       </list>
     </option>
   </component>
@@ -200,8 +200,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ScholarshipAwarding.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="249">
-          <caret line="25" column="42" lean-forward="true" selection-start-line="25" selection-start-column="42" selection-end-line="25" selection-end-column="42" />
+        <state relative-caret-position="535">
+          <caret line="89" column="24" lean-forward="true" selection-start-line="89" selection-start-column="24" selection-end-line="89" selection-end-column="24" />
           <folding>
             <element signature="e#47#60#0" expanded="true" />
           </folding>
