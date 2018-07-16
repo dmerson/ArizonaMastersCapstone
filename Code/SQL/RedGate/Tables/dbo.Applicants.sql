@@ -7,3 +7,5 @@ CREATE TABLE [dbo].[Applicants]
 GO
 ALTER TABLE [dbo].[Applicants] ADD CONSTRAINT [PK_Applicants] PRIMARY KEY CLUSTERED  ([ApplicantId]) ON [PRIMARY]
 GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_Applicants] ON [dbo].[Applicants] ([LastName], [FirstName]) ON [PRIMARY]
+GO

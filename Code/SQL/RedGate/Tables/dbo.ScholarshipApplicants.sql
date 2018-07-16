@@ -8,6 +8,8 @@ CREATE TABLE [dbo].[ScholarshipApplicants]
 GO
 ALTER TABLE [dbo].[ScholarshipApplicants] ADD CONSTRAINT [PK_ScholarshipApplicants] PRIMARY KEY CLUSTERED  ([ScholarshipApplicantId]) ON [PRIMARY]
 GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_ScholarshipApplicants] ON [dbo].[ScholarshipApplicants] ([AwardingGroupId], [ApplicantId], [ScholarshipId]) ON [PRIMARY]
+GO
 ALTER TABLE [dbo].[ScholarshipApplicants] ADD CONSTRAINT [FK_ScholarshipApplicants_Applicants] FOREIGN KEY ([ApplicantId]) REFERENCES [dbo].[Applicants] ([ApplicantId])
 GO
 ALTER TABLE [dbo].[ScholarshipApplicants] ADD CONSTRAINT [FK_ScholarshipApplicants_AwardingGroups] FOREIGN KEY ([AwardingGroupId]) REFERENCES [dbo].[AwardingGroups] ([AwardingGroupId])

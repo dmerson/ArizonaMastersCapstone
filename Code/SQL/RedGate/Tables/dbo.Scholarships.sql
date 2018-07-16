@@ -7,3 +7,5 @@ CREATE TABLE [dbo].[Scholarships]
 GO
 ALTER TABLE [dbo].[Scholarships] ADD CONSTRAINT [PK_Scholarships] PRIMARY KEY CLUSTERED  ([ScholarshipId]) ON [PRIMARY]
 GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_Scholarships] ON [dbo].[Scholarships] ([ScholarshipName], [ScholarshipAmount]) ON [PRIMARY]
+GO
