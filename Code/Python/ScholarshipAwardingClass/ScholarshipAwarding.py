@@ -27,12 +27,25 @@ class ScholarshipAwarding(object):
         return (self.sqlConnection)
 
     def GetAlorithms(self):
+        """
+        Basic function to verify your database connection. It just pulls the algorithm table.
+        :return:
+        """
         sql = "Select * from Algorithms"
         algorithms = pandas.io.sql.read_sql(sql, self.GetConnection())
         self.GetConnection().close()
         return (algorithms)
 
     def GetAnalysis(self,awarding_group_id, maximum_award, minimum_award, max_applicants, run_analysis_first):
+        """
+        This function is called when you want to review your analysis or rerun the analysis
+        :param awarding_group_id: you must already have this number
+        :param maximum_award:
+        :param minimum_award:
+        :param max_applicants:
+        :param run_analysis_first:  1 for yes 0 for don't run analysis again
+        :return:
+        """
         sql = "GetAnalysis " + str(awarding_group_id) + ", " + str(maximum_award) + ", "
         sql = sql + str(minimum_award) + "," + str(max_applicants) + "," + str(run_analysis_first)
         analysis= pandas.io.sql.read_sql(sql, self.GetConnection())
@@ -40,6 +53,16 @@ class ScholarshipAwarding(object):
         return (analysis)
 
     def InsertDenormalizedData(self,awarding_group_id, scholarshipName, scholarshipAmount, applicantName, applicantRank):
+        """
+        This is the stored proc that pulls does the bit by job of inserting items from a spreadsheet.
+        It is used with CreateAnalysisFromSpreadsheet
+        :param awarding_group_id: you must already have this number
+        :param scholarshipName:
+        :param scholarshipAmount:
+        :param applicantName:
+        :param applicantRank:
+        :return:
+        """
         sql = "InsertIntoDenormalizedEntry " + str(awarding_group_id) + ","
         sql = sql + "'" + str(scholarshipName) + "',"
         sql = sql + str(scholarshipAmount) + ","
@@ -52,11 +75,24 @@ class ScholarshipAwarding(object):
 
     def CreateAnalysisFromSpreadsheet(self,awarding_group_name, filePath, maximum_award, minimum_award, max_applicants,
                                          run_analysis_first):
+        """
+        This is a one shop stop to go from a spreadsheet to an analysis.
+        Format for spreadsheet is Scholarship, ScholarshipAward, Applicant,ApplicantRanking
+        It also requires the data to be in the first and only sheet
+
+        :param awarding_group_name: user can pick any name
+        :param filePath: path to data file
+        :param maximum_award:
+        :param minimum_award:
+        :param max_applicants:
+        :param run_analysis_first:
+        :return:
+        """
         new_awarding_group = pandas.io.sql.read_sql("CreateAwardingGroup 'FromPython'", self.GetConnection())
         new_awarding_group_id = new_awarding_group["AwardingGroupId"][0]
         from pandas import ExcelWriter
         from pandas import ExcelFile
-        df = pd.read_excel(filePath, sheetname='Sheet1')
+        df = pd.read_excel(filePath )
         for i in df.index:
             scholarship = df["Scholarship"][i]
             scholarship_award = df["ScholarshipAward"][i]
@@ -68,6 +104,16 @@ class ScholarshipAwarding(object):
         return (analysis)
 
     def GetScholarshipAwards(self,algorithm_id, awading_group_id, maximum_award, minimum_award, max_applicants):
+        """
+        After analysis the user can view the awards for the best algorithm
+        This works with the normalized version only
+        :param algorithm_id:
+        :param awading_group_id:
+        :param maximum_award:
+        :param minimum_award:
+        :param max_applicants:
+        :return:
+        """
         sql = "GetScholarshipAwards " + str(algorithm_id) + ","
         sql = sql + str(awading_group_id) + ","
         sql = sql + str(maximum_award) + ","
@@ -79,6 +125,17 @@ class ScholarshipAwarding(object):
         return (results)
 
     def GetDeonormalizedScholarshipAwards(self,algorithm_id, awading_group_id, maximum_award, minimum_award, max_applicants):
+        """
+        After analysis, the user can views the award for best algoritm
+        this works on with the denormalized version only
+
+        :param algorithm_id:
+        :param awading_group_id:
+        :param maximum_award:
+        :param minimum_award:
+        :param max_applicants:
+        :return:
+        """
         sql = "GetDeonormalizedScholarshipAwards " + str(algorithm_id) + ","
         sql = sql + str(awading_group_id) + ","
         sql = sql + str(maximum_award) + ","
