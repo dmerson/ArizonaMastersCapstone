@@ -4,18 +4,18 @@ library(readxl)
 library(readr)	
 library(tidyr)	
 library(RODBC)
-install.packages("sqldf")
-install.packages("DBI")
-remove.packages("DBI")
-install.packages("RSQLite")
+#install.packages("sqldf")
+#install.packages("DBI")
+#remove.packages("DBI")
+#install.packages("RSQLite")
 library(RSQLite)
 library(sqldf)	
 library(readxl)
 
 getSqlQueryFromSUDB <-function(sqlQuery){
   library(RODBC)
-  server="TARDIS\\TARDIS" #POWER\\POWER17
-  database="ScholarshipAwardingProcess" #"ScholarshipAwardingSystems"}
+  server="POWER\\POWER17" #TARDIS\\TARDIS" #POWER\\POWER17
+  database="SASCLONE"#ScholarshipAwardingProcess" #"ScholarshipAwardingSystems"}
   conn=paste("driver={SQL Server};server=",server,";database=",database,";trusted_connection=true", sep="")
   print(conn)
   cn <- odbcDriverConnect(connection=conn)
@@ -90,23 +90,30 @@ for (i in 1:count_Of_data){
 
 #function to pull from excel file, get awarding group, insert into database, and get analysis
 create_analysis_from_spreadsheet <- function (awarding_group_name,filePath,maximum_award,minimum_award,max_applicants,run_analysis_first){
-  awarding_group_id <-create_awarding_group_and_get_id(awarding_group_name)
+  awarding_group_id_for_new <-create_awarding_group_and_get_id(awarding_group_name)
+  print(awarding_group_id_for_new)
   library(readxl)
   DemoData <- tbl_df(read_excel(filePath))
+  View(DemoData)
+  count_Of_data=nrow(DemoData)
   for (i in 1:count_Of_data){
     scholarship_name =DemoData[i,1]
     scholarship_amount =DemoData[i,2]
     applicant_name=DemoData[i,3]
     applicant_rank =DemoData[i,4]
-    InsertDenormalizedData(awarding_group_id,scholarship_name,scholarship_amount,applicant_name,applicant_rank)
+    InsertDenormalizedData(awarding_group_id_for_new,scholarship_name,scholarship_amount,applicant_name,applicant_rank)
+    print(scholarship_name)
+    print(applicant_rank)
   }
-  getAnalysis(awarding_group_id,maximum_award,minimum_award,max_applicants,run_analysis_first)
+  getAnalysis(awarding_group_id_for_new,maximum_award,minimum_award,max_applicants,run_analysis_first)
   
 }
-create_analysis_from_spreadsheet("test case","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/DemoData.xlsx",1500,130,2,1)
+#create_analysis_from_spreadsheet("test case","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/DemoData.xlsx",1500,130,2,1)
 
-create_analysis_from_spreadsheet("test case2","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/DemoData2.xlsx",1500,130,2,1)
+#create_analysis_from_spreadsheet("test case2","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/DemoData2.xlsx",1500,130,2,1)
 
+
+create_analysis_from_spreadsheet("exc","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup1.xlsx", 12400,250,2,1)
 
 get_analysis <-function(algorithm_id, awarding_group_id,maximum_award,minimum_award,max_applicants){
   
