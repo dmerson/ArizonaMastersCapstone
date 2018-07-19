@@ -1,6 +1,6 @@
 --SELECT * FROM dbo.DenormalizedEntyResults
 --WHERE AwardingGroupId=23
-DECLARE @awardinggroup INT = 35;
+DECLARE @awardinggroup INT = 37;
 SELECT 'BEFORE'
 ;WITH applicants
 AS (   SELECT DISTINCT
