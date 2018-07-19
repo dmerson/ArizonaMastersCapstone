@@ -2,37 +2,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
-CREATE PROC [dbo].[CreateAnalysis]
+Create PROC [dbo].[CreateAnalysis]
 	@algorithmid INT, 
-    @AwardingGroupId INT,
+    @awardgroup INT,
     @MaximumAward DECIMAL(9, 2),
     @MinimumAward DECIMAL(9, 2),
     @MaxApplicants INT
 AS
-SET NOCOUNT ON 
-	DECLARE @whichTable CHAR(1);
-SET @whichTable =
-(
-    SELECT TOP 1
-           *
-    FROM
-    (
-        SELECT TOP 1
-               '1' IsNormalized
-        FROM dbo.NormalizedView
-        WHERE AwardingGroupId = @AwardingGroupId
-        UNION
-        SELECT TOP 1
-               '0' IsNormalized
-        FROM dbo.DenormalizedEntries
-        WHERE AwardingGroupId = @AwardingGroupId
-        UNION
-        SELECT -1 IsNormalized
-    ) whichTable
-    ORDER BY 1 DESC
-);
-IF @whichTable = 1
-BEGIN
 
 
 DELETE FROM dbo.ScholarshipAwardAnalysises
@@ -40,7 +16,7 @@ WHERE AlgorithmId = @algorithmid
       AND MaxApplicants = @MaxApplicants
       AND MinimumAward = @MinimumAward
       AND MaximumAward = @MaximumAward
-      AND AwardingGroupId = @AwardingGroupId;
+      AND AwardingGroupId = @awardgroup;
 
 ;WITH calculations
 AS (SELECT ApplicantRankings.AwardingGroupId,
@@ -56,7 +32,7 @@ AS (SELECT ApplicantRankings.AwardingGroupId,
           AND MaxApplicants = @MaxApplicants
           AND MinimumAward = @MinimumAward
           AND MaximumAward = @MaximumAward
-          AND ApplicantRankings.AwardingGroupId = @AwardingGroupId
+          AND ApplicantRankings.AwardingGroupId = @awardgroup
     GROUP BY ApplicantRankings.AwardingGroupId,
              Ranking),
       maxmin
@@ -133,7 +109,7 @@ AS (SELECT AwardingGroupId,
           AND MaxApplicants = @MaxApplicants
           AND MinimumAward = @MinimumAward
           AND MaximumAward = @MaximumAward
-          AND AwardingGroupId = @AwardingGroupId
+          AND AwardingGroupId = @awardgroup
     GROUP BY AwardingGroupId)
 INSERT INTO dbo.ScholarshipAwardAnalysises
 (
@@ -175,17 +151,7 @@ FROM ra1checkraw
     INNER JOIN maxmin
         ON maxmin.AwardingGroupId = ra1checkraw.AwardingGroupId;
 
-END
 
-IF @whichTable =0
-BEGIN
-	EXEC dbo.CreateDenormalizedEntryAnalysis @algorithmid ,     -- int
-	                                         @MaxApplicants,   -- int
-	                                         @MinimumAward , -- decimal(9, 2)
-	                                         @MaximumAward , -- decimal(9, 2)
-	                                         @AwardingGroupId        -- int
-	
-end
 		--left for future troubleshooting
 --SELECT *
 --FROM dbo.ScholarshipAwardAnalysises

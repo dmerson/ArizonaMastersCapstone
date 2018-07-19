@@ -14,7 +14,7 @@ AS
     SET @whichTable =
         (
             SELECT TOP 1
-                   *
+                   whichTable.IsNormalized
             FROM
                    (
                        SELECT TOP 1
