@@ -10,8 +10,8 @@ library(readxl)
 
 getSqlQueryFromSUDB <-function(sqlQuery){
   library(RODBC)
-  server="POWER\\POWER17" #TARDIS\\TARDIS" #POWER\\POWER17
-  database="SASCLONE"#ScholarshipAwardingProcess" #"ScholarshipAwardingSystems"}
+  server="TARDIS\\TARDIS" #TARDIS\\TARDIS" #POWER\\POWER17
+  database="SAPClone4"#ScholarshipAwardingProcess" #"ScholarshipAwardingSystems"}
   conn=paste("driver={SQL Server};server=",server,";database=",database,";trusted_connection=true", sep="")
   #print(conn)
   cn <- odbcDriverConnect(connection=conn)
@@ -63,23 +63,29 @@ create_analysis_from_spreadsheet <- function (awarding_group_name,filePath,maxim
   getAnalysis(awarding_group_id_for_new,maximum_award,minimum_award,max_applicants,run_analysis_first)
   
 }
-#create_analysis_from_spreadsheet("aw1","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup1.xlsx", 12400,250,2,1)
-# create_analysis_from_spreadsheet("aw3","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup3.xlsx", 12400,250,2,1)
-#create_analysis_from_spreadsheet("aw4","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup4.xlsx", 12400,250,2,1)
-# create_analysis_from_spreadsheet("aw6","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup6.xlsx", 12400,250,2,1)
-# create_analysis_from_spreadsheet("aw7","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup7.xlsx", 12400,250,2,1)
-# create_analysis_from_spreadsheet("aw9","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup9.xlsx", 12400,250,2,1)
-# create_analysis_from_spreadsheet("aw10","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup10.xlsx", 12400,250,2,1)
-# create_analysis_from_spreadsheet("aw11","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup11.xlsx", 12400,250,2,1)
-# create_analysis_from_spreadsheet("aw12","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup12.xlsx", 12400,250,2,1)
-# create_analysis_from_spreadsheet("aw13","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup13.xlsx", 12400,250,2,1)
-# create_analysis_from_spreadsheet("aw14","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup14.xlsx", 12400,250,2,1)
-# create_analysis_from_spreadsheet("aw15","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup15.xlsx", 12400,250,2,1)
-# create_analysis_from_spreadsheet("aw16","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup16.xlsx", 12400,250,2,1)
-# create_analysis_from_spreadsheet("aw18","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup18.xlsx", 12400,250,2,1)
-# create_analysis_from_spreadsheet("aw19","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup19.xlsx", 12400,250,2,1)
-#create_analysis_from_spreadsheet("aw20","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup20.xlsx", 12400,250,2,1)
-#create_analysis_from_spreadsheet("aw21","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup21.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw1","Example Data/ImportedData/AwardingGroup1.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw3","Example Data/ImportedData/AwardingGroup3.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw4","Example Data/ImportedData/AwardingGroup4.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw6","Example Data/ImportedData/AwardingGroup6.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw7","Example Data/ImportedData/AwardingGroup7.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw9","Example Data/ImportedData/AwardingGroup9.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw10","Example Data/ImportedData/AwardingGroup10.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw11","Example Data/ImportedData/AwardingGroup11.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw12","Example Data/ImportedData/AwardingGroup12.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw13","Example Data/ImportedData/AwardingGroup13.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw14","Example Data/ImportedData/AwardingGroup14.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw15","Example Data/ImportedData/AwardingGroup15.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw16","Example Data/ImportedData/AwardingGroup16.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw18","Example Data/ImportedData/AwardingGroup18.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw19","Example Data/ImportedData/AwardingGroup19.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw20","Example Data/ImportedData/AwardingGroup20.xlsx", 12400,250,2,1)
+create_analysis_from_spreadsheet("aw21","Example Data/ImportedData/AwardingGroup21.xlsx", 12400,250,2,1)
+
+
+
+
+create_analysis_from_spreadsheet("aw1","Example Data/ImportedData/AwardingGroup1.xlsx", 12400,250,10,1)
+create_analysis_from_spreadsheet("aw1","Example Data/ImportedData/AwardingGroup1.xlsx", 12400,250,5,1)
 
 
 
@@ -89,14 +95,4 @@ create_analysis_from_spreadsheet <- function (awarding_group_name,filePath,maxim
 
 
 
-
-
-
-
-
-
-
-#create_analysis_from_spreadsheet("exc","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup20.xlsx", 12400,250,2,1)
-
-#create_analysis_from_spreadsheet("ag21","C:/Repos/Documents/scholarshipawardingprocess/Code/R/RWithSQLServer/Example Data/ImportedData/AwardingGroup21.xlsx", 12400,250,2,1)
-
+ 
