@@ -1,4 +1,6 @@
-DECLARE @whichshownid INT = 3;
+DECLARE @whichshownid INT =1;
+
+
 WITH sourcesin25
 AS (   SELECT  DISTINCT
                Scholarships.SourceId,
@@ -170,4 +172,4 @@ WHERE
 ORDER BY
         CONVERT(DECIMAL(9,2),scholarships25.TotalAmountAvailable) DESC,
         scholarships25.ScholarshipName,
-        ApplicantRanking DESC;
+        ApplicantRanking ;
