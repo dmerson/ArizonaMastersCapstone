@@ -10,7 +10,7 @@ CREATE PROC [dbo].[GetAnalysis]
     @RunAnalysisFirst BIT = 0
 AS
     SET NOCOUNT ON;
-    DECLARE @whichTable CHAR(1);
+    DECLARE @whichTable INT ;
     SET @whichTable =
         (
             SELECT TOP 1
